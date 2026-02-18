@@ -1,0 +1,17 @@
+<!-- For Logistic Regression result -->
+{% if logistic_pred == 0 %}
+    <div class="fake-badge">0</div>
+    <small>Fake Job Posting</small>
+{% else %}
+    <div class="real-badge">1</div>
+    <small>Real Job Posting</small>
+{% endif %}
+
+<!-- For Random Forest result -->
+{% if rf_pred == 0 %}
+    <div class="fake-badge">0</div>
+    <small>Fake Job Posting</small>
+{% else %}
+    <div class="real-badge">1</div>
+    <small>Real Job Posting</small>
+{% endif %}
