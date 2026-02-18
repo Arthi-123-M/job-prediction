@@ -1,17 +1,162 @@
-<!-- For Logistic Regression result -->
-{% if logistic_pred == 0 %}
-    <div class="fake-badge">0</div>
-    <small>Fake Job Posting</small>
-{% else %}
-    <div class="real-badge">1</div>
-    <small>Real Job Posting</small>
-{% endif %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Posting Fraud Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <div class="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li>Model Performance
+                <ul>
+                    <li><a href="/predict">Predict New Job</a></li>
+                    <li><a href="#">Dataset Analysis</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
 
-<!-- For Random Forest result -->
-{% if rf_pred == 0 %}
-    <div class="fake-badge">0</div>
-    <small>Fake Job Posting</small>
-{% else %}
-    <div class="real-badge">1</div>
-    <small>Real Job Posting</small>
-{% endif %}
+    <!-- Main Content -->
+    <div class="container">
+        <h1>Job Posting Fraud Detection</h1>
+        
+        <div class="job-header">
+            <h2>Telecommuting / Remote</h2>
+            <p><strong>Requirements*</strong><br>Python, Django, SQL, AWS</p>
+        </div>
+
+        <!-- Prediction Form -->
+        <div class="prediction-form">
+            <h3>Enter Job Details:</h3>
+            <form action="/predict" method="POST">
+                <div class="form-row">
+                    <label>Has Salary:</label>
+                    <select name="has_salary" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label>Has Company Logo:</label>
+                    <select name="has_company_logo" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label>Has Questions:</label>
+                    <select name="has_questions" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label>Title Length:</label>
+                    <input type="number" name="title_length" value="50" required>
+                </div>
+                
+                <div class="form-row">
+                    <label>Description Length:</label>
+                    <input type="number" name="description_length" value="500" required>
+                </div>
+                
+                <div class="form-row">
+                    <label>Requirements Length:</label>
+                    <input type="number" name="requirements_length" value="200" required>
+                </div>
+                
+                <div class="form-row">
+                    <label>Has Telecommuting:</label>
+                    <select name="has_telecommuting" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label>Has Healthcare:</label>
+                    <select name="has_healthcare" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label>Has 401k:</label>
+                    <select name="has_401k" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <label>Has Bonus:</label>
+                    <select name="has_bonus" required>
+                        <option value="1">Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="predict-btn">Predict Job</button>
+            </form>
+        </div>
+
+        <!-- Prediction Results -->
+        {% if logistic_pred is not none %}
+        <div class="results">
+            <h2>Prediction Results</h2>
+            
+            <div class="model-result">
+                <h3>Logistic Regression</h3>
+                {% if logistic_pred == 0 %}
+                    <div class="fake-badge">0</div>
+                    <p class="fake-text">FAKE JOB POSTING</p>
+                {% else %}
+                    <div class="real-badge">1</div>
+                    <p class="real-text">REAL JOB POSTING</p>
+                {% endif %}
+                
+                <div class="confidence">
+                    <p><strong>Confidence:</strong> {{ logistic_fake }}%</p>
+                    <div class="confidence-bars">
+                        <span class="fake-badge-small">Fake: {{ logistic_fake }}%</span>
+                        <span class="real-badge-small">Real: {{ logistic_real }}%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="model-result">
+                <h3>Random Forest</h3>
+                {% if rf_pred == 0 %}
+                    <div class="fake-badge">0</div>
+                    <p class="fake-text">FAKE JOB POSTING</p>
+                {% else %}
+                    <div class="real-badge">1</div>
+                    <p class="real-text">REAL JOB POSTING</p>
+                {% endif %}
+                
+                <div class="confidence">
+                    <p><strong>Confidence:</strong> {{ rf_fake }}%</p>
+                    <div class="confidence-bars">
+                        <span class="fake-badge-small">Fake: {{ rf_fake }}%</span>
+                        <span class="real-badge-small">Real: {{ rf_real }}%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if error %}
+        <div class="error">
+            <p>Error: {{ error }}</p>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
